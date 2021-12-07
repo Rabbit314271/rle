@@ -85,7 +85,7 @@ class CustomDataset(data.Dataset):
 
         # load ground truth, including bbox, keypoints, image size
         label = copy.deepcopy(self._labels[idx])
-        logging.debug(img_path)
+        
         img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
 
         # transform ground truth into training label and apply data augmentation
