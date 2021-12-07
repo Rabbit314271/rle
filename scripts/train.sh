@@ -7,7 +7,7 @@ PORT=${3:-23456}
 HOST=$(hostname -i)
 
 python ./scripts/train.py \
-    --nThreads 1 \
+    --nThreads 2 \
     --launcher pytorch --rank 0 \
     --dist-url tcp://${HOST}:${PORT} \
     --exp-id ${EXPID} \
