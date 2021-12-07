@@ -1,8 +1,8 @@
 DATASET:
   TRAIN:
     TYPE: 'Mscoco'
-    ROOT: './data/coco/images'
-    IMG_PREFIX: 'train2017'
+    ROOT: './data/coco/'
+    IMG_PREFIX: 'images/train2017'
     ANN: 'annotations/person_keypoints_train2017.json'
     AUG:
       FLIP: true
@@ -12,13 +12,13 @@ DATASET:
       PROB_HALF_BODY: 0.3
   VAL:
     TYPE: 'Mscoco'
-    ROOT: './data/coco/images/'
-    IMG_PREFIX: 'val2017'
+    ROOT: './data/coco/'
+    IMG_PREFIX: 'images/val2017'
     ANN: 'annotations/person_keypoints_val2017.json'
   TEST:
     TYPE: 'Mscoco_det'
-    ROOT: './data/coco/images/'
-    IMG_PREFIX: 'val2017'
+    ROOT: './data/coco/'
+    IMG_PREFIX: 'images/val2017'
     DET_FILE: './exp/json/test_det_rcnn.json'
     ANN: 'annotations/person_keypoints_val2017.json'
 DATA_PRESET:
