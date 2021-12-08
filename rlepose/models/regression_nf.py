@@ -129,7 +129,7 @@ class RegressFlow(nn.Module):
         
 
         if dbg==True:print("feat after pool:",feat.size())
-        self.feat=self.vit(x)
+        feat=self.vit(x)
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
 
