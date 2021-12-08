@@ -26,11 +26,11 @@ DATA_PRESET:
   SIGMA: 2
   NUM_JOINTS: 17
   IMAGE_SIZE:
-  - 224
-  - 224
+  - 256
+  - 192
   HEATMAP_SIZE:
-  - 56
-  - 56
+  - 64
+  - 48
 MODEL:
   TYPE: 'RegressFlow'
   PRETRAINED: ''
