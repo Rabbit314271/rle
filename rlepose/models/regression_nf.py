@@ -57,7 +57,7 @@ class RegressFlow(nn.Module):
         
         import pytorch_pretrained_vit
         
-        model_name = 'B_16_imagenet1k'
+        model_name = 'B_16'
         self.vit = pytorch_pretrained_vit.ViT(model_name, num_classes=2048,pretrained=True)
         
 
