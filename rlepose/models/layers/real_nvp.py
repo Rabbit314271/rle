@@ -40,7 +40,7 @@ class RealNVP(nn.Module):
             log_det_J -= s.sum(dim=1)
         return z, log_det_J
 
-    def log_prob(self, x,dbg=True):
+    def log_prob(self, x,dbg=False):
         DEVICE = x.device
         if dbg==True:print('log prob input',x.size())
         if self.prior.loc.device != DEVICE:
