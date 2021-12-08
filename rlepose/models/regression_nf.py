@@ -59,7 +59,7 @@ class RegressFlow(nn.Module):
         self.vit = ViT(
             image_size = (256,192),
             patch_size = 32,
-            num_classes = 1000,
+            num_classes = 2048,
             dim = 1024,
             depth = 6,
             heads = 16,
