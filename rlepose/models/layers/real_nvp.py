@@ -40,8 +40,9 @@ class RealNVP(nn.Module):
             log_det_J -= s.sum(dim=1)
         return z, log_det_J
 
-    def log_prob(self, x):
+    def log_prob(self, x,dbg=True):
         DEVICE = x.device
+        if dbg==True:print('log prob input',x.size())
         if self.prior.loc.device != DEVICE:
             self.prior.loc = self.prior.loc.to(DEVICE)
             self.prior.scale_tril = self.prior.scale_tril.to(DEVICE)
@@ -50,6 +51,7 @@ class RealNVP(nn.Module):
             self.prior.precision_matrix = self.prior.precision_matrix.to(DEVICE)
 
         z, logp = self.backward_p(x)
+        if dbg==True:print('log_prob output z/logp:',z.size(),logp.size())
         return self.prior.log_prob(z) + logp
 
     def sample(self, batchSize):
