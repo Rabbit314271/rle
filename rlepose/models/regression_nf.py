@@ -118,12 +118,12 @@ class RegressFlow(nn.Module):
     def forward(self, x, labels=None,dbg=False,mode='vit'):
         
         BATCH_SIZE = x.shape[0]
-        if mode='resnet':
+        if mode=='resnet':
             feat = self.preact(x)
             _, _, f_h, f_w = feat.shape
             feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
 
-        if mode='vit':
+        if mode=='vit':
                     self.feat=vit(x)
         if dbg==True:print("feat after feat:",feat.size())
 
