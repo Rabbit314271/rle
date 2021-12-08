@@ -54,6 +54,12 @@ class RegressFlow(nn.Module):
         import torchvision.models as tm  # noqa: F401,F403
         assert cfg['NUM_LAYERS'] in [18, 34, 50, 101, 152]
         x = eval(f"tm.resnet{cfg['NUM_LAYERS']}(pretrained=True)")
+        
+        import pytorch_pretrained_vit
+        
+        model_name = 'B_16_imagenet1k'
+        vit = pytorch_pretrained_vit.ViT(model_name, num_classes=2048,pretrained=True)
+        
 
         self.feature_channel = {
             18: 512,
@@ -109,50 +115,55 @@ class RegressFlow(nn.Module):
             if isinstance(m, nn.Linear):
                 nn.init.xavier_uniform_(m.weight, gain=0.01)
 
-    def forward(self, x, labels=None):
+    def forward(self, x, labels=None,dbg=False,mode='vit'):
+        
         BATCH_SIZE = x.shape[0]
+        if mode='resnet':
+            feat = self.preact(x)
+            _, _, f_h, f_w = feat.shape
+            feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
 
-        feat = self.preact(x)
-        print("feat after feat:",feat.size())
+        if mode='vit':
+                    self.feat=vit(x)
+        if dbg==True:print("feat after feat:",feat.size())
 
-        _, _, f_h, f_w = feat.shape
-        feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
+        
 
-        print("feat after pool:",feat.size())
+        if dbg==True:print("feat after pool:",feat.size())
 
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
 
-        print("out_coord after fc_coord:",out_coord.size())
+        if dbg==True:print("out_coord after fc_coord:",out_coord.size())
 
         out_sigma = self.fc_sigma(feat).reshape(BATCH_SIZE, self.num_joints, -1)
 
-        print("out_csigma after fc_sigma:",out_sigma.size())
+        if dbg==True:print("out_csigma after fc_sigma:",out_sigma.size())
         # (B, N, 2)
         pred_jts = out_coord.reshape(BATCH_SIZE, self.num_joints, 2)
 
-        print("pred_jts after out_coord:",pred_jts.size())
+        if dbg==True:print("pred_jts after out_coord:",pred_jts.size())
 
         sigma = out_sigma.reshape(BATCH_SIZE, self.num_joints, -1).sigmoid()
 
-        print("sigma after out_sigma:",sigma.size())
+        if dbg==True:print("sigma after out_sigma:",sigma.size())
 
         scores = 1 - sigma
 
         scores = torch.mean(scores, dim=2, keepdim=True)
 
-        print("scores after mean:",out_coord.size())
+        if dbg==True:print("scores after mean:",out_coord.size())
 
         if self.training and labels is not None:
             gt_uv = labels['target_uv'].reshape(pred_jts.shape)
 
-            print("gt_uv after reshape:",gt_uv.size(),"pred_jts.shape:",pred_jts.size())
+            if dbg==True:print("gt_uv after reshape:",gt_uv.size(),"pred_jts.shape:",pred_jts.size())
             
             bar_mu = (pred_jts - gt_uv) / sigma
             # (B, K, 2)
-            print("barmu after minus:",bar_mu.size())
+            if dbg==True:print("barmu after minus:",bar_mu.size())
             log_phi = self.flow.log_prob(bar_mu.reshape(-1, 2)).reshape(BATCH_SIZE, self.num_joints, 1)
-            print("log_phi after log_prob:",log_phi.size())
+            if dbg==True:print("log_phi after log_prob:",log_phi.size())
             nf_loss = torch.log(sigma) - log_phi
 
         else:
