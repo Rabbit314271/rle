@@ -122,14 +122,16 @@ class RegressFlow(nn.Module):
             feat = self.preact(x)
             _, _, f_h, f_w = feat.shape
             feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
+            if dbg==True:print("feat after feat:",feat.size())
         else:'''
         
-        if dbg==True:print("feat after feat:",feat.size())
+        
 
         
 
-        if dbg==True:print("feat after pool:",feat.size())
+        
         feat=self.vit(x)
+        if dbg==True:print("feat after pool:",feat.size())
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
 
