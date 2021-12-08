@@ -113,29 +113,48 @@ class RegressFlow(nn.Module):
         BATCH_SIZE = x.shape[0]
 
         feat = self.preact(x)
+        print("feat after feat:",feat.size())
 
         _, _, f_h, f_w = feat.shape
         feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
 
+        print("feat after pool:",feat.size())
+
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
 
+        print("out_coord after fc_coord:",out_coord.size())
+
         out_sigma = self.fc_sigma(feat).reshape(BATCH_SIZE, self.num_joints, -1)
 
+        print("out_csigma after fc_sigma:",out_sigma.size())
         # (B, N, 2)
         pred_jts = out_coord.reshape(BATCH_SIZE, self.num_joints, 2)
+
+        print("pred_jts after out_coord:",pred_jts.size())
+
         sigma = out_sigma.reshape(BATCH_SIZE, self.num_joints, -1).sigmoid()
+
+        print("sigma after out_sigma:",sigma.size())
+
         scores = 1 - sigma
 
         scores = torch.mean(scores, dim=2, keepdim=True)
 
+        print("scores after mean:",out_coord.size())
+
         if self.training and labels is not None:
             gt_uv = labels['target_uv'].reshape(pred_jts.shape)
+
+            print("gt_uv after reshape:",gt_uv.size(),"pred_jts.shape:",pred_jts.size())
+            
             bar_mu = (pred_jts - gt_uv) / sigma
             # (B, K, 2)
+            print("barmu after minus:",bar_mu.size())
             log_phi = self.flow.log_prob(bar_mu.reshape(-1, 2)).reshape(BATCH_SIZE, self.num_joints, 1)
-
+            print("log_phi after log_prob:",log_phi.size())
             nf_loss = torch.log(sigma) - log_phi
+
         else:
             nf_loss = None
 
