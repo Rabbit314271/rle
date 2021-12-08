@@ -56,7 +56,7 @@ class RegressFlow(nn.Module):
         x = eval(f"tm.resnet{cfg['NUM_LAYERS']}(pretrained=True)")
 
         from vit_pytorch import ViT
-        vit = ViT(
+        self.vit = ViT(
             image_size = (256,192),
             patch_size = 32,
             num_classes = 1000,
