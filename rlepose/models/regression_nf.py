@@ -54,11 +54,20 @@ class RegressFlow(nn.Module):
         import torchvision.models as tm  # noqa: F401,F403
         assert cfg['NUM_LAYERS'] in [18, 34, 50, 101, 152]
         x = eval(f"tm.resnet{cfg['NUM_LAYERS']}(pretrained=True)")
-        
-        import pytorch_pretrained_vit
-        
-        model_name = 'B_16'
-        self.vit = pytorch_pretrained_vit.ViT(model_name, num_classes=2048,pretrained=True)
+
+        from vit_pytorch import ViT
+        vit = ViT(
+            image_size = (256,192),
+            patch_size = 32,
+            num_classes = 1000,
+            dim = 1024,
+            depth = 6,
+            heads = 16,
+            mlp_dim = 2048,
+            dropout = 0.1,
+            emb_dropout = 0.1
+            )
+
         
 
         self.feature_channel = {
