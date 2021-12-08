@@ -115,22 +115,16 @@ class RegressFlow(nn.Module):
             if isinstance(m, nn.Linear):
                 nn.init.xavier_uniform_(m.weight, gain=0.01)
 
-    def forward(self, x, labels=None,dbg=True):
-        mode='vit'
+    def forward(self, x, labels=None,dbg=False):
+        mode='resnet'
         BATCH_SIZE = x.shape[0]
-        '''if mode=='resnet':
+        if mode=='resnet':
             feat = self.preact(x)
             _, _, f_h, f_w = feat.shape
             feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
             if dbg==True:print("feat after feat:",feat.size())
-        else:'''
-        
-        
-
-        
-
-        
-        feat=self.vit(x)
+        else:
+            feat=self.vit(x)
         if dbg==True:print("feat after pool:",feat.size())
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
