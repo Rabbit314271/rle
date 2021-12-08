@@ -58,7 +58,7 @@ class RegressFlow(nn.Module):
         import pytorch_pretrained_vit
         
         model_name = 'B_16_imagenet1k'
-        vit = pytorch_pretrained_vit.ViT(model_name, num_classes=2048,pretrained=True)
+        self.vit = pytorch_pretrained_vit.ViT(model_name, num_classes=2048,pretrained=True)
         
 
         self.feature_channel = {
@@ -124,7 +124,7 @@ class RegressFlow(nn.Module):
             feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
 
         if mode=='vit':
-                    self.feat=vit(x)
+                    self.feat=self.vit(x)
         if dbg==True:print("feat after feat:",feat.size())
 
         
