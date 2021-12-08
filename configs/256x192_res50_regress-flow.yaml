@@ -29,8 +29,8 @@ DATA_PRESET:
   - 224
   - 224
   HEATMAP_SIZE:
-  - 96
-  - 96
+  - 56
+  - 56
 MODEL:
   TYPE: 'RegressFlow'
   PRETRAINED: ''
