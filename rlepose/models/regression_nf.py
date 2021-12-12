@@ -8,6 +8,8 @@ from .builder import SPPE
 from .layers.real_nvp import RealNVP
 from .layers.Resnet import ResNet
 
+import timm
+
 
 def nets():
     return nn.Sequential(nn.Linear(2, 64), nn.LeakyReLU(), nn.Linear(64, 64), nn.LeakyReLU(), nn.Linear(64, 2), nn.Tanh())
@@ -55,18 +57,7 @@ class RegressFlow(nn.Module):
         assert cfg['NUM_LAYERS'] in [18, 34, 50, 101, 152]
         x = eval(f"tm.resnet{cfg['NUM_LAYERS']}(pretrained=True)")
 
-        from vit_pytorch import ViT
-        self.vit = ViT(
-            image_size = (256,192),
-            patch_size = 32,
-            num_classes = 2048,
-            dim = 1024,
-            depth = 6,
-            heads = 16,
-            mlp_dim = 2048,
-            dropout = 0.1,
-            emb_dropout = 0.1
-            )
+        self.m = timm.create_model('dm_nfnet_f0', pretrained=True,num_classes=2048)
 
         
 
@@ -133,7 +124,7 @@ class RegressFlow(nn.Module):
             feat = self.avg_pool(feat).reshape(BATCH_SIZE, -1)
             if dbg==True:print("feat after feat:",feat.size())
         else:
-            feat=self.vit(x)
+            feat=self.m(x)
         if dbg==True:print("feat after pool:",feat.size())
         out_coord = self.fc_coord(feat).reshape(BATCH_SIZE, self.num_joints, 2)
         assert out_coord.shape[2] == 2
