@@ -116,7 +116,7 @@ class RegressFlow(nn.Module):
                 nn.init.xavier_uniform_(m.weight, gain=0.01)
 
     def forward(self, x, labels=None,dbg=False):
-        mode='vit'
+        mode='resnet'
         BATCH_SIZE = x.shape[0]
         if mode=='resnet':
             feat = self.preact(x)
