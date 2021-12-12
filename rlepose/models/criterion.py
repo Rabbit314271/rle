@@ -34,7 +34,7 @@ class RLELoss(nn.Module):
         self.amp = 1 / math.sqrt(2 * math.pi)
 
     def logQ(self, gt_uv, pred_jts, sigma):
-        return torch.log(sigma / self.amp) + torch.abs(gt_uv - pred_jts) / (math.sqrt(2) * sigma + 1e-9)
+        return torch.log(sigma / self.amp) + torch.abs(gt_uv - pred_jts) / (math.sqrt(2) * sigma + 1e-5)
 
     def forward(self, output, labels):
         nf_loss = output.nf_loss
@@ -67,7 +67,7 @@ class RLELoss3D(nn.Module):
         self.amp = 1 / math.sqrt(2 * math.pi)
 
     def logQ(self, gt_uv, pred_jts, sigma):
-        return torch.log(sigma / self.amp) + torch.abs(gt_uv - pred_jts) / (math.sqrt(2) * sigma + 1e-9)
+        return torch.log(sigma / self.amp) + torch.abs(gt_uv - pred_jts) / (math.sqrt(2) * sigma + 1e-5)
 
     def forward(self, output, labels):
         nf_loss = output.nf_loss
